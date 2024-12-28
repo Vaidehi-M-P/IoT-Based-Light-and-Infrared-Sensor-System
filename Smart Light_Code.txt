@@ -1,0 +1,74 @@
+
+#include "thingProperties.h"
+#define ldr_led D5
+#define LDR D1
+const int ledlight=D0;
+int ir_led = D2;
+int ir = D3;
+int val = 0;
+
+
+void setup() {
+  // Initialize serial and wait for port to open:
+  Serial.begin(9600);
+  pinMode(ledlight,OUTPUT);
+    pinMode(ldr_led, OUTPUT);
+    pinMode(ir_led, OUTPUT); // declare LED as output 
+   pinMode(ir, INPUT); // declare Infrared sensor as input
+  // This delay gives the chance to wait for a Serial Monitor without blocking if none is found
+  delay(1500); 
+ // Defined in thingProperties.h
+  initProperties();
+  // Connect to Arduino IoT Cloud
+  ArduinoCloud.begin(ArduinoIoTPreferredConnection);
+  setDebugMessageLevel(2);
+  ArduinoCloud.printDebugInfo();
+}
+
+void loop() {
+  LDR_LED();
+  IR();
+  ArduinoCloud.update();
+}
+
+void IR()
+{ 
+   val = digitalRead(ir); // read input value 
+   if (val == HIGH)
+   { // check if the input is HIGH
+      digitalWrite(ir_led, LOW); // turn LED OFF   
+   } 
+   else 
+   { 
+      digitalWrite(ir_led, HIGH); // turn LED ON 
+   } 
+}
+
+
+void LDR_LED()
+{
+  int light = digitalRead(D1);
+  if(light == 0)
+  {
+    digitalWrite(ldr_led, HIGH);
+  }
+  else
+  {
+    digitalWrite(ldr_led, LOW);
+  }
+  //delay(150);
+  Serial.println(light);
+}
+
+
+void onLedChange()  {
+  if(led){
+    digitalWrite(ledlight,HIGH);
+  }
+  else{
+    digitalWrite(ledlight,LOW);
+  }
+
+}
+
+
